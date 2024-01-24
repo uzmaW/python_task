@@ -47,6 +47,11 @@ def delete_database(database_url, db_name=POSTGRES_DB):
         metadata = MetaData()
         metadata.reflect(engine)
         metadata.drop_all(engine)
+        conn = engine.connect()
+        conn.execute(f"COMMIT")
+        conn.execute(f"DROP DATABASE IF EXISTS {db_name}")
+        conn.execute(f"COMMIT")
+        conn.close()
         print(f"Database deleted: {db_name}")
     except Exception as e:
         print(f"Error deleting database: {e}")
